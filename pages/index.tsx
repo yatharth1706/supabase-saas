@@ -1,13 +1,27 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
+import type { NextPage } from "next";
+import { supabase } from "../utils/supabase";
+import Link from "next/link";
 
-const Home: NextPage = () => {
+export default function Home({ lessons }: any) {
+  console.log(lessons);
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
-      working
+    <div className="flex flex-col w-full max-w-3xl mx-auto py-16 px-8">
+      {lessons.map((lesson) => (
+        <Link className="text-xl mb-6" key={lesson.id} href={`/${lesson.id}`}>
+          {lesson.title}
+        </Link>
+      ))}
     </div>
-  )
+  );
 }
 
-export default Home
+export const getStaticProps = async () => {
+  const { data: lessons } = await supabase.from("lesson").select("*");
+
+  return {
+    props: {
+      lessons,
+    },
+  };
+};
