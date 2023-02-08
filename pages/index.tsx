@@ -3,6 +3,7 @@ import { supabase } from "../utils/supabase";
 import Link from "next/link";
 
 export default function Home({ lessons }: any) {
+  supabase.auth.getUser().then((res) => console.log(res));
   console.log(lessons);
 
   return (
