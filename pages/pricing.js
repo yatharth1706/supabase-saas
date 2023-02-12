@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import initStripe from "stripe";
 import { useUser } from "../contexts/user";
+import { loadStripe } from "@stripe/stripe-js";
 
 function pricing({ plans }) {
   const { user, login } = useUser();
@@ -11,8 +12,13 @@ function pricing({ plans }) {
   const showCreateAccountButton = user && Object.keys(user).length == 0;
 
   const processSubscription = async (planId) => {
-    const { data } = await axios.post(`/api/subscription/${planId}`);
-    console.log(data);
+    const {
+      data: { id },
+    } = await axios.post(`/api/subscription/${planId}`, { user });
+    const stripeClient = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY);
+    await stripeClient.redirectToCheckout({
+      sessionId: id,
+    });
   };
 
   return (
@@ -42,7 +48,7 @@ export const getStaticProps = async () => {
     prices.map(async (price) => {
       const product = await stripe.products.retrieve(price.product);
       return {
-        id: product.id,
+        id: price.id,
         name: product.name,
         price: price.unit_amount,
         interval: price.recurring.interval,
