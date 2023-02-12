@@ -10,7 +10,7 @@ function nav() {
       <Link className="mr-4" href="/">
         Home
       </Link>
-      <Link href="/">Pricing</Link>
+      <Link href="/pricing">Pricing</Link>
       <Link className="ml-auto" href={user && Object.keys(user).length > 0 ? "/logout" : "/login"}>
         {user && Object.keys(user).length > 0 ? "Logout" : "Login"}
       </Link>

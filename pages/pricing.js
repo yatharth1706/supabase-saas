@@ -1,7 +1,20 @@
+import axios from "axios";
 import React from "react";
 import initStripe from "stripe";
+import { useUser } from "../contexts/user";
 
 function pricing({ plans }) {
+  const { user, login } = useUser();
+
+  const showSubscribeButton = user && user?.is_subscribed == false;
+  const manageSubscribeButton = user && user?.is_subscribed == true;
+  const showCreateAccountButton = user && Object.keys(user).length == 0;
+
+  const processSubscription = async (planId) => {
+    const { data } = await axios.post(`/api/subscription/${planId}`);
+    console.log(data);
+  };
+
   return (
     <div className="w-full max-w-3xl mx-auto py-16 flex justify-around">
       {plans?.map((plan) => (
@@ -10,6 +23,11 @@ function pricing({ plans }) {
           <p>
             Rs{plan.price / 100} / {plan.interval}
           </p>
+          {showSubscribeButton && (
+            <button onClick={() => processSubscription(plan.id)}>Subscribe</button>
+          )}
+          {showCreateAccountButton && <button onClick={login}>Create Account</button>}
+          {manageSubscribeButton && <button>Manage Subscription</button>}
         </div>
       ))}
     </div>
