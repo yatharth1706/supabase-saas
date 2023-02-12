@@ -1,10 +1,11 @@
 import type { NextPage } from "next";
 import { supabase } from "../utils/supabase";
 import Link from "next/link";
+import { useUser } from "../contexts/user";
 
 export default function Home({ lessons }: any) {
-  supabase.auth.getUser().then((res) => console.log(res));
-  console.log(lessons);
+  const { user } = useUser();
+  console.log(user);
 
   return (
     <div className="flex flex-col w-full max-w-3xl mx-auto py-16 px-8">
